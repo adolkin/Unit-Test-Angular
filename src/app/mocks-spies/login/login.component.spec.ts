@@ -1,5 +1,6 @@
 import { AuthService } from './../../classes-pipes/auth.service';
 import { LoginComponent } from './login.component';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 
 // ******** REAL SERVICE ********
 describe('LoginComponent with real service', () => {
@@ -89,9 +90,11 @@ describe('LoginComponent with real service and spyOn', () => {
   });
 
   it('needsLogin return true when the user is not authenticated', () => {
+    //We create a spy on our service so that if the isAuthenticated function is called it returns false.
     spy = spyOn(service, 'isAuthenticated').and.returnValue(false);
     expect(component.needsLogin()).toBeTruthy();
-    expect(service.isAuthenticated).toHaveBeenCalled(); 
+    //We can even check to see if the isAuthenticated function was called.
+    expect(service.isAuthenticated).toHaveBeenCalled();
   })
 
   it('needsLogin return false when the user is authenticated', () => {
@@ -99,4 +102,41 @@ describe('LoginComponent with real service and spyOn', () => {
     expect(component.needsLogin()).toBeFalsy();
     expect(service.isAuthenticated).toHaveBeenCalled();
   })
+});
+
+
+// ******** TESTBED ********
+describe('LoginComponent TestBed', () => {
+  let component: LoginComponent;
+  let fixture: ComponentFixture<LoginComponent>;
+  let authService: AuthService;
+  beforeEach(() => {
+    //We configure it in exactly the same way as we would configure a normal NgModule
+    TestBed.configureTestingModule({
+      declarations: [LoginComponent],
+      providers: [AuthService]
+    });
+
+    // create component and test fixture
+    // We create an instance of a component fixture through the TestBed, this injects the AuthService into the component constructor.
+    fixture = TestBed.createComponent(LoginComponent);
+
+    //We can find the actual component from the componentInstance on the fixture.
+    component = fixture.componentInstance;
+
+    //We can find the actual component from the componentInstance on the fixture.
+    authService = TestBed.get(AuthService);
+  });
+
+  it('needsLogin returns true when the user is not authenticated', () => {
+    spyOn(authService, 'isAuthenticated').and.returnValue(false);
+    expect(component.needsLogin()).toBeTruthy();
+    expect(authService.isAuthenticated).toHaveBeenCalled();
+  });
+
+  it('needsLogin returns false when the user is not authenticated', () => {
+    spyOn(authService, 'isAuthenticated').and.returnValue(true);
+    expect(component.needsLogin()).toBeFalsy();
+    expect(authService.isAuthenticated).toHaveBeenCalled();
+  });
 });
