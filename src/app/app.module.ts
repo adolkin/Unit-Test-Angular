@@ -9,6 +9,9 @@ import { LoginPromiseComponent } from './async/login-promise/login-promise.compo
 import { LoginInOutComponent } from './input-output/login-in-out/login-in-out.component';
 import { HoverFocusDirective } from './directives/hover-focus.directive';
 import { LoginFormComponent } from './reactive-form/login-form/login-form.component';
+import { HomeComponent } from './routing/home/home.component';
+import { SearchComponent } from './routing/search/search.component';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -19,9 +22,12 @@ import { LoginFormComponent } from './reactive-form/login-form/login-form.compon
     LoginInOutComponent,
     HoverFocusDirective,
     LoginFormComponent,
+    HomeComponent,
+    SearchComponent,
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    AppRoutingModule
   ],
   providers: [AuthService],
   bootstrap: [AppComponent]
