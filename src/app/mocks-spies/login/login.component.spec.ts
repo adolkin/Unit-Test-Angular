@@ -1,6 +1,6 @@
 import { AuthService } from './../../classes-pipes/auth.service';
 import { LoginComponent } from './login.component';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { TestBed, ComponentFixture, inject } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
@@ -198,5 +198,52 @@ describe('LoginComponent Change Detection', () => {
     fixture.detectChanges();
     // AuthService returns true and the button text updated to Logout accordingly.
     expect(el.nativeElement.textContent.trim()).toBe('Logout');
+  });
+});
+
+// ******** TEST DEPENDENCY INJECTION ********
+describe('LoginComponent DI', () => {
+
+  let component: LoginComponent;
+  let fixture: ComponentFixture<LoginComponent>;
+  let testBedService: AuthService;
+  let componentService: AuthService;
+
+  beforeEach(() => {
+
+    // refine the test module by declaring the test component
+    TestBed.configureTestingModule({
+      declarations: [LoginComponent],
+      providers: [AuthService]
+    });
+
+    // Configure the component with another set of Providers
+    TestBed.overrideComponent(
+        LoginComponent,
+        {set: {providers: [{provide: AuthService, useClass: MockAuthService}]}}
+    );
+
+    // create component and test fixture
+    fixture = TestBed.createComponent(LoginComponent);
+
+    // get test component from the fixture
+    component = fixture.componentInstance;
+
+    // AuthService provided to the TestBed
+    testBedService = TestBed.get(AuthService);
+
+    // AuthService provided by Component, (should return MockAuthService)
+    componentService = fixture.debugElement.injector.get(AuthService);
+  });
+
+  // DI Inject Function
+  it('Service injected via inject(...) and TestBed.get(...) should be the same instance',
+      inject([AuthService], (injectService: AuthService) => {
+        expect(injectService).toBe(testBedService);
+      })
+  );
+
+  it('Service injected via component should be and instance of MockAuthService', () => {
+    expect(componentService instanceof MockAuthService).toBeTruthy();
   });
 });

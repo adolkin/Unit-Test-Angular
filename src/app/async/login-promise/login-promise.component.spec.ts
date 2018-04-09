@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync, inject } from '@angular/core/testing';
 
 import { LoginPromiseComponent } from './login-promise.component';
 
@@ -87,16 +87,17 @@ describe('LoginPromiseComponent', () => {
 
   // ******** FAKEASYNC AND TICK FUNCTION ********
   // We wrap the test spec function in a function called fakeAsync.
-  it('Button label via fakeAsync() and tick()', fakeAsync(() => { 
+  it('Button label via fakeAsync() and tick()', fakeAsync(() => {
     expect(el.nativeElement.textContent.trim()).toBe('');
     fixture.detectChanges();
     expect(el.nativeElement.textContent.trim()).toBe('Login');
     spyOn(authService, 'isAuthenticated').and.returnValue(Promise.resolve(true));
     component.ngOnInit();
-    
+
     //	We call tick() when there are pending asynchronous activities we want to complete.
-    tick(); 
+    tick();
     fixture.detectChanges();
     expect(el.nativeElement.textContent.trim()).toBe('Logout');
   }));
 });
+
