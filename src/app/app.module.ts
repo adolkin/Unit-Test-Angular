@@ -8,6 +8,7 @@ import { LoginComponent } from './mocks-spies/login/login.component';
 import { LoginPromiseComponent } from './async/login-promise/login-promise.component';
 import { LoginInOutComponent } from './input-output/login-in-out/login-in-out.component';
 import { HoverFocusDirective } from './directives/hover-focus.directive';
+import { LoginFormComponent } from './reactive-form/login-form/login-form.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { HoverFocusDirective } from './directives/hover-focus.directive';
     LoginPromiseComponent,
     LoginInOutComponent,
     HoverFocusDirective,
+    LoginFormComponent,
   ],
   imports: [
     BrowserModule
