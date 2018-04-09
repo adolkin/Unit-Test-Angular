@@ -10,7 +10,7 @@ describe('AuthService', () => {
 
   // After each test spec is finished we null out our service and also remove any tokens we stored in localStorage.
   afterEach(() => {
-    service: null;
+    service = null;
     localStorage.removeItem('token');
   })
 
