@@ -1,6 +1,8 @@
 import { AuthService } from './../../classes-pipes/auth.service';
 import { LoginComponent } from './login.component';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 // ******** REAL SERVICE ********
 describe('LoginComponent with real service', () => {
@@ -138,5 +140,63 @@ describe('LoginComponent TestBed', () => {
     spyOn(authService, 'isAuthenticated').and.returnValue(true);
     expect(component.needsLogin()).toBeFalsy();
     expect(authService.isAuthenticated).toHaveBeenCalled();
+  });
+});
+
+// ******** CHANGE DETETCTION ********
+describe('LoginComponent Change Detection', () => {
+
+  let component: LoginComponent;
+  let fixture: ComponentFixture<LoginComponent>;
+  let authService: AuthService;
+  // The fixture as well as holding an instance of the component also holds a reference to something called a DebugElement, 
+  // this is a wrapper to the low level DOM element that represents the components view, via the debugElement property
+  let el: DebugElement;
+
+  beforeEach(() => {
+
+    // refine the test module by declaring the test component
+    TestBed.configureTestingModule({
+      declarations: [LoginComponent],
+      providers: [AuthService]
+    });
+
+    // create component and test fixture
+    fixture = TestBed.createComponent(LoginComponent);
+
+    // get test component from the fixture
+    component = fixture.componentInstance;
+
+    // UserService provided to the TestBed
+    authService = TestBed.get(AuthService);
+
+    // We can get references to other child nodes by querying this debugElement with a By class. 
+    // The By class lets us query using a a number of methods, 
+    // one is via a css class like we have in our example another way is to request by a type of directive like By.directive(MyDirective).
+    //  Get the "a" element by CSS selector (e.g., by class name) and store to el variable
+    el = fixture.debugElement.query(By.css('a'));
+  });
+
+  it('login button hidden when the user is authenticated', () => {
+    // We can find out the text content of the tag by calling el.nativeElement.textContent.trim()
+
+    // When Angular first loads no change detection has been triggered and therefore the view doesn’t show either the Login or Logout text.
+    expect(el.nativeElement.textContent.trim()).toBe('');
+
+    // Trigger change detection we call the function fixture.detectChanges()
+    fixture.detectChanges();
+
+    // Since the AuthService defaults to not authenticated we show the text Login
+    expect(el.nativeElement.textContent.trim()).toBe('Login');
+
+    // Change the AuthService so it now returns authenticated
+    spyOn(authService, 'isAuthenticated').and.returnValue(true);
+    // But at this point the button content still isn’t Logout
+    expect(el.nativeElement.textContent.trim()).toBe('Login');
+
+    // We need to trigger another change detection
+    fixture.detectChanges();
+    // AuthService returns true and the button text updated to Logout accordingly.
+    expect(el.nativeElement.textContent.trim()).toBe('Logout');
   });
 });
